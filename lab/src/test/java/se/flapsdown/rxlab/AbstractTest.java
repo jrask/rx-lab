@@ -1,4 +1,4 @@
-package se.flapsdown.rx.blocking;
+package se.flapsdown.rxlab;
 
 public class AbstractTest {
 

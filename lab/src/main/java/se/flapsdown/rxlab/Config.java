@@ -1,4 +1,4 @@
-package se.flapsdown.rx;
+package se.flapsdown.rxlab;
 
 
 import java.util.List;

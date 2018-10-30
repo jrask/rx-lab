@@ -1,4 +1,4 @@
-package se.flapsdown.rx.blocking;
+package se.flapsdown.rxlab;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

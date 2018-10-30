@@ -1,16 +1,17 @@
-package se.flapsdown.rx.blocking;
+package se.flapsdown.rxlab;
 
 import io.reactivex.Observable;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import org.junit.Test;
+import se.flapsdown.rxlab.blocking.ExternalService;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class ExternalServiceExample {
+public class RxExternalServiceExample {
 
 
     String urls = "https://www.google.se,https://www.aftonbladet.se";

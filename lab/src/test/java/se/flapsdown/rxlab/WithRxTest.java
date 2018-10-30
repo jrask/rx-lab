@@ -1,4 +1,4 @@
-package se.flapsdown.rx.blocking;
+package se.flapsdown.rxlab;
 
 import io.reactivex.Observable;
 import org.junit.Before;
