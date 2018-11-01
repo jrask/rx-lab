@@ -7,9 +7,24 @@ import static java.util.Arrays.asList;
 
 public class Config {
 
-    public static String URLS = "https://www.google.se,https://www.aftonbladet.se,http://www.handelsbanken.se";
 
-    public static List<String> urls() {
-        return asList(URLS.split(","));
+    public enum Service {
+
+        LOCALHOST  ("http://localhost",        3_000),
+        SHB        ("http://handelsbanken.se", 2_000),
+        GOOGLE     ("http://google.com",       1_000);
+
+        public String url;
+        public long delay;
+
+        Service(String s, long i) {
+            url = s;
+            delay = i;
+        }
+    }
+
+
+    public static List<Service> services() {
+        return asList(Service.values());
     }
 }

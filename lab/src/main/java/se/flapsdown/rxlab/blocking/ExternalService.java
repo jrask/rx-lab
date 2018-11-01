@@ -2,42 +2,45 @@ package se.flapsdown.rxlab.blocking;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.flapsdown.rxlab.Config;
 
 import java.io.IOException;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import static se.flapsdown.rxlab.GoodStuff.delay;
 
 public class ExternalService {
 
-   private static final OkHttpClient client = new OkHttpClient();
+    private static final Logger LOG = LoggerFactory.getLogger(ExternalService.class);
 
-    private final String endpoint;
+    private static final OkHttpClient client = new OkHttpClient();
 
-    static Random random = new Random();
+    private final Config.Service endpoint;
 
-    public ExternalService(String endpoint) {
+    public ExternalService(Config.Service endpoint) {
         this.endpoint = endpoint;
     }
 
-    public String get() {
-        return get(random.nextInt(3000));
-    }
 
-    public String get(long sleep) {
-        System.out.println("get(" + endpoint + ") on " + Thread.currentThread().getName());
+    // Q: How can we implement this to return an observable instead?
+    //    Two ways,
+    //     - One simple that wraps the sync flow
+    //     - One more advanced that uses the async nature of okhttp
+    //
+    public String get() {
+        LOG.info("get() {}", endpoint.url);
+
         Request request = new Request.Builder()
-                .url(endpoint)
+                .url(endpoint.url)
                 .get()
                 .build();
         try {
-            TimeUnit.MILLISECONDS.sleep(1000);
-
+            delay(endpoint.delay, TimeUnit.MILLISECONDS);
             return client.newCall(request).execute().body().string();
         } catch (IOException e) {
             throw new IllegalStateException(e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("Interrupted");
         }
     }
 

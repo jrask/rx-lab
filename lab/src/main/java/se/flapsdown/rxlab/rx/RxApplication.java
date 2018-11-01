@@ -10,7 +10,7 @@ public class RxApplication {
 
      Observable<Integer> rxSyncGet() {
 
-        return Observable.fromIterable(Config.urls())
+        return Observable.fromIterable(Config.services())
             .map(ExternalService::new)
             .map(ExternalService::get)
             .map(String::length);
@@ -19,7 +19,7 @@ public class RxApplication {
 
     Observable<Integer> rxAsyncGet() {
 
-        return Observable.fromIterable(Config.urls())
+        return Observable.fromIterable(Config.services())
             .map(RxExternalService::new)
             .flatMap(rxExternalService ->
                 rxExternalService.rxGet()
