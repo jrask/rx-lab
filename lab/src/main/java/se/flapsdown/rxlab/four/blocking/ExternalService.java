@@ -1,15 +1,15 @@
-package se.flapsdown.rxlab.blocking;
+package se.flapsdown.rxlab.four.blocking;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.flapsdown.rxlab.Config;
+import se.flapsdown.rxlab.four.Config;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import static se.flapsdown.rxlab.GoodStuff.delay;
+import static se.flapsdown.rxlab.util.GoodStuff.delay;
 
 public class ExternalService {
 

@@ -1,4 +1,4 @@
-package se.flapsdown.rxlab.blocking;
+package se.flapsdown.rxlab.four.blocking;
 
 import static spark.Spark.*;
 

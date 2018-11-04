@@ -120,3 +120,88 @@ Nothing is done until subscribe() is invoked, thats when items will begin to be 
 
 ---
 
+## Lab 1
+
+**Rx Operators**
+
+Open rx-lab/lab/src/test/java/se/flapsdown/rxlab/one/.
+Some tests should simply print values, others should be fixed so that
+the test passes
+
+---
+
+## Handling Errors
+
+* Simply catch them and return error
+* Return default value
+* Return another Observable
+* Retry
+* Combination
+
+---
+
+### Catch exception
+
+```java
+Observable.just("Hello", "World")
+    // potential error
+    .subscribe(
+        System.out::println,
+        Throwable::printStackTrace,
+        ()-> System.out.println("Done!"));
+// vs
+    .subscribe()
+```
+
+Note: If there is no onError() callback an onErrorNotImplementedException will be "thrown", well at least printed to Stderr to inform you that you are missing an exception handler. This would be where we send error response to http clients
+
+### Return something else
+
+```java
+Observable.just("Hello", "World")
+    // potential error
+    .onErrorReturnItem("GoodNight")
+
+Observable.just("Hello", "World")
+    // potential error
+    .onErrorReturn( error ->
+        if( error instanceof NullPointerException) {
+            return "Empty"
+        } else {
+            throw error;
+        }
+    )
+```
+
+---
+
+### Return a stream
+
+```java
+Observable.just("Hello", "World")
+    // potential error
+    .onErrorResumeNext(Observable.empty())
+```
+---
+
+### TODO - Retries 
+
+---
+
+## Lab 2
+
+Errors
+
+---
+
+## Concurrency
+
+Add slides
+
+---
+
+## Lab 3
+
+From blocking two reactive
+
+---

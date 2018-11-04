@@ -1,4 +1,4 @@
-package se.flapsdown.rxlab;
+package se.flapsdown.rxlab.util;
 
 import java.util.concurrent.TimeUnit;
 

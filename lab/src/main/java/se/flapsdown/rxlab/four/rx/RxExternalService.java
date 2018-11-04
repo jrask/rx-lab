@@ -1,18 +1,16 @@
-package se.flapsdown.rxlab.rx;
+package se.flapsdown.rxlab.four.rx;
 
 import io.reactivex.Observable;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.flapsdown.rxlab.Config;
-import se.flapsdown.rxlab.GoodStuff;
-import se.flapsdown.rxlab.blocking.ExternalService;
+import se.flapsdown.rxlab.four.Config;
+import se.flapsdown.rxlab.four.blocking.ExternalService;
 
 import java.io.IOException;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import static se.flapsdown.rxlab.GoodStuff.delay;
+import static se.flapsdown.rxlab.util.GoodStuff.delay;
 
 public class RxExternalService {
 

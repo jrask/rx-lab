@@ -1,9 +1,9 @@
-package se.flapsdown.rxlab.rx;
+package se.flapsdown.rxlab.four.rx;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
-import se.flapsdown.rxlab.Config;
-import se.flapsdown.rxlab.blocking.ExternalService;
+import se.flapsdown.rxlab.four.Config;
+import se.flapsdown.rxlab.four.blocking.ExternalService;
 
 public class RxApplication {
 

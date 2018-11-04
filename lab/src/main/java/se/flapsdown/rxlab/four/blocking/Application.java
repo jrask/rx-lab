@@ -1,8 +1,8 @@
-package se.flapsdown.rxlab.blocking;
+package se.flapsdown.rxlab.four.blocking;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.flapsdown.rxlab.Config;
+import se.flapsdown.rxlab.four.Config;
 
 import java.util.Optional;
 

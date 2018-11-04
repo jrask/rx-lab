@@ -1,6 +1,4 @@
-package se.flapsdown.rxlab.rx;
-
-import se.flapsdown.rxlab.rx.RxApplication;
+package se.flapsdown.rxlab.four.rx;
 
 import static spark.Spark.get;
 
