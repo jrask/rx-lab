@@ -3,7 +3,7 @@ package se.flapsdown.rxlab.one;
 import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
-import se.flapsdown.rxlab.util.StreamUtil;
+import se.flapsdown.rxlab.util.Streams;
 
 import static se.flapsdown.rxlab.util.DogStream.dogs;
 
@@ -107,11 +107,11 @@ public class StreamOperatorsTest {
     public void test_zip_streams() {
         // Zip two streams using zipWith() or zip()
 
-        // Zip two dog streams into a stream of StreamUtil.Pair
+        // Zip two dog streams into a stream of Streams.Pair
         dogs()
 
-            .zipWith(dogs(), (dog1, dog2) -> StreamUtil.Pair.of(dog1, dog2))
-            .map(StreamUtil.Pair::toString)
+            .zipWith(dogs(), (dog1, dog2) -> Streams.Pair.of(dog1, dog2))
+            .map(Streams.Pair::toString)
             .doOnNext(System.out::println)
             .take(1)
             .subscribe(stringSubscriber);

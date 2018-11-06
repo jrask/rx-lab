@@ -97,7 +97,7 @@ onError is instead of catch() we cannot catch in async mode
 
 ---
 
-## Subscribe sample
+## Subscribe samples
 
 ```java
 Observable.just("Hello", "World")
@@ -105,18 +105,40 @@ Observable.just("Hello", "World")
         System.out::println,
         Throwable::printStackTrace,
         ()-> System.out.println("Done!"));
+
+Observable.just("Hello", "World")
+    .subscribe();
+```
+
+---
+
+### Multiple subscriptions
+
+```java
+Observable<String> johan = Observable.just("Johan")
+    .map(name -> name.toUpperCase())
+    .doOnNext(System.out::print);
+
+johan.subscribe();
+johan.subscribe();
+
+> JOHAN
+> JOHAN
 ```
 
 ---
 
 ## Lazy
 ```java
-Observable.just("Hello", "World")
+Observable<String> stream = Observable.just("Hello", "World")
     .map(s -> s + ":")
-    .doOnNext(System.out::println)
-    //.subscribe() must be invoked
+    .doOnNext(System.out::println);
+
+// This is where it happens!
+stream.subscribe() must be invoked
+
 ```
-Nothing is done until subscribe() is invoked, thats when items will begin to be emitted.
+Note: Nothing is done until subscribe() is invoked, thats when items will begin to be emitted.
 
 ---
 
@@ -155,7 +177,7 @@ Observable.just("Hello", "World")
 
 Note: If there is no onError() callback an onErrorNotImplementedException will be "thrown", well at least printed to Stderr to inform you that you are missing an exception handler. This would be where we send error response to http clients
 
-### Return something else
+### Return values
 
 ```java
 Observable.just("Hello", "World")
@@ -184,7 +206,25 @@ Observable.just("Hello", "World")
 ```
 ---
 
-### TODO - Retries 
+### Retry n times
+
+```java
+Observable.just("Hello", "World")
+    // potential error
+    .retry(5)
+    .subscribe()
+```
+Note: Will retry 5 times regardless of error
+
+### Retry with condition
+
+```java
+Observable.just("Hello", "World")
+    // potential error
+    .retry( (retryCnt, error) -> retryCnt < 5)
+    .subscribe()
+```
+Note: We can retry depending on error and/or count
 
 ---
 

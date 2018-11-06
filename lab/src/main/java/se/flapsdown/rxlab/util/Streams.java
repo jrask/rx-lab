@@ -2,8 +2,23 @@ package se.flapsdown.rxlab.util;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class StreamUtil {
+import java.util.concurrent.TimeUnit;
+
+public class Streams {
+
+    public static final Logger LOG = LoggerFactory.getLogger("rx-lab");
+
+    public static void delay(long delay, TimeUnit unit) {
+        try {
+            unit.sleep(delay);
+        } catch (InterruptedException e) {
+            System.out.println("we are interrupted");
+            Thread.currentThread().interrupt();
+        }
+    }
 
     static class QuietObserver implements Observer {
 
@@ -41,13 +56,17 @@ public class StreamUtil {
     }
 
 
+    public static Logger logger() {
+        return LOG;
+    }
+
     // Useful as onSuccess() callback
     public static void success() {
         System.out.println("Alles gut!");
     }
 
     public static void print(Object o) {
-        System.out.println(o);
+        LOG.info(o.toString());
     }
 
     public static class Pair<T1, T2> {

@@ -1,14 +1,20 @@
 package se.flapsdown.rxlab.two;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 import org.junit.Test;
+import se.flapsdown.rxlab.util.Streams;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static se.flapsdown.rxlab.util.DogStream.dogs;
-import static se.flapsdown.rxlab.util.StreamUtil.subscribeQuiet;
+import static se.flapsdown.rxlab.util.Streams.print;
+import static se.flapsdown.rxlab.util.Streams.subscribeQuiet;
 
 public class HandleExceptions_Test {
 
@@ -16,6 +22,39 @@ public class HandleExceptions_Test {
 
 //https://github.com/ReactiveX/RxJava/wiki/Error-Handling-Operators#retryuntil
 
+
+    Observable<String> source =  Observable.interval(0, 1, TimeUnit.SECONDS)
+        .zipWith(dogs(),(aLong, s) -> s)
+        .flatMap(name -> {
+            if (name.equals("Pepsi")) return Observable.error(new IOException("Something went wrong!"));
+            if (name.equals("Rocky")) return Observable.error(new RuntimeException("Something went wrong!"));
+            else return Observable.just(name);
+        });
+
+    @Test
+    public void test_retry_with() {
+
+        AtomicInteger cnt = new AtomicInteger(0);
+
+        source
+            .doOnNext(s -> cnt.incrementAndGet())
+            .retry(3)
+            .blockingSubscribe(
+                x -> print("onNext: " + x),
+                error -> print("onError: " + error.getMessage()));
+
+        assertThat(cnt).isEqualTo(8);
+    }
+
+    @Test
+    public void test_retry_with_count() {
+
+        source
+            .retry((retryCount, error) -> retryCount < 3)
+        .blockingSubscribe(
+            x -> System.out.println("onNext: " + x),
+            error -> System.err.println("onError: " + error.getMessage()));
+    }
 
     @Test
     public void test_retry_when() {
@@ -26,7 +65,9 @@ public class HandleExceptions_Test {
                 else return Observable.just(x);
             });
 
-        source.retryWhen(errors ->
+        source.retryWhen(retryHandler(3))
+
+        /*source.retryWhen(errors ->
 
             errors.map(error -> 1)
 
@@ -40,11 +81,11 @@ public class HandleExceptions_Test {
 
                 // Signal resubscribe event after some delay.
                 .flatMapSingle(errorCount -> Single.timer(errorCount, TimeUnit.SECONDS))
-        ).blockingSubscribe(
+        )*/
+        .blockingSubscribe(
             x -> System.out.println("onNext: " + x),
             Throwable::printStackTrace,
             () -> System.out.println("onComplete"));
-
 
     }
 
@@ -82,4 +123,20 @@ public class HandleExceptions_Test {
         throw new RuntimeException();
     }
 
+
+    public static Function<Observable<Throwable>, ObservableSource<?>> retryHandler(int retries) {
+
+        return errors -> errors.map(error -> 1)
+
+            // Count the number of errors.
+            .scan((integer, integer2) -> integer + integer2)
+
+            .doOnNext(errorCount -> System.out.println("No. of errors: " + errorCount))
+
+            // Limit the maximum number of retries.
+            .takeWhile(errorCount -> errorCount < retries)
+
+            // Signal resubscribe event after some delay.
+            .flatMapSingle(errorCount -> Single.timer(errorCount, TimeUnit.SECONDS));
+    }
 }

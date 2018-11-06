@@ -9,7 +9,7 @@ import se.flapsdown.rxlab.four.Config;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import static se.flapsdown.rxlab.util.GoodStuff.delay;
+import static se.flapsdown.rxlab.util.Streams.delay;
 
 public class ExternalService {
 

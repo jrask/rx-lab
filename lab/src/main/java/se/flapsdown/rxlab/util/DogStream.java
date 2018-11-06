@@ -27,11 +27,11 @@ public class DogStream {
         return Single.just("Bella");
     }
 
-    public static Flowable<String> flowDogs() {
+    public static Flowable<String> dogsAsFlow() {
         return Flowable.fromIterable(DOGS);
     }
 
-    public Maybe<String> withName(String name) {
+    public static Maybe<String> withName(String name) {
         return dogs()
             .filter( n -> n.equals(name))
             .firstElement();
