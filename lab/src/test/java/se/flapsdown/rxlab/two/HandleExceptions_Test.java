@@ -5,7 +5,6 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 import org.junit.Test;
-import se.flapsdown.rxlab.util.Streams;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +19,7 @@ public class HandleExceptions_Test {
 
     // Catch, Retries, Defaults etc
 
-//https://github.com/ReactiveX/RxJava/wiki/Error-Handling-Operators#retryuntil
+//https://github.com/ReactiveX/RxJava/wiki/Error-Handling-Operators
 
 
     Observable<String> source =  Observable.interval(0, 1, TimeUnit.SECONDS)
@@ -31,8 +30,12 @@ public class HandleExceptions_Test {
             else return Observable.just(name);
         });
 
+
     @Test
     public void test_retry_with() {
+
+        // use  Observable.retry(cnt) so that the assertion is correct
+        // Run the test first to see what happens
 
         AtomicInteger cnt = new AtomicInteger(0);
 
@@ -43,23 +46,30 @@ public class HandleExceptions_Test {
                 x -> print("onNext: " + x),
                 error -> print("onError: " + error.getMessage()));
 
-        assertThat(cnt).isEqualTo(8);
+        assertThat(cnt.get()).isEqualTo(8);
     }
 
     @Test
     public void test_retry_with_count() {
 
+        // Use Observable.retry(retryCount, Throwable) -> ...)
+        AtomicInteger cnt = new AtomicInteger(0);
+
         source
-            .retry((retryCount, error) -> retryCount < 3)
+            .doOnNext(s -> cnt.incrementAndGet())
+            .retry((retryCount, error) -> retryCount <= 3)
         .blockingSubscribe(
             x -> System.out.println("onNext: " + x),
             error -> System.err.println("onError: " + error.getMessage()));
+
+        assertThat(cnt.get()).isEqualTo(8);
     }
 
 
     @Test
     public void test_retry_when() {
 
+        // This is finished, try to understand what it does
 
         source.retryWhen(errors ->
 
@@ -92,12 +102,11 @@ public class HandleExceptions_Test {
     public void test_return_other_dogname() {
 
         // Make this test successful returning a default dogname on error
-        // It should print the dog name once
+        // It is good enough if the default dogname is printed once
         dogs()
-            .map(this::throwEx)
-         //   .onErrorReturnItem("Buster")
+            .map(this::checkDogName)
+            .onErrorReturnItem("Buster")
             .doOnNext(System.out::println)
-           // .doOnError(Throwable::printStackTrace)
             .subscribe(subscribeQuiet());
     }
 
@@ -105,37 +114,23 @@ public class HandleExceptions_Test {
     public void test_return_other_dogname_for_each_failed() {
 
         // Make this test successful returning a default dogname for each dog name
+        // that fails after invoking checkDogName()
         // it should print the default dog name once for each original dog name
-        // Hint: Separate streams!
+        // Hint: Separate streams! onErrorResume*
+
+
 
         dogs()
-            //.flatMap(s ->
-            //    Observable.just(s)
-            //        .map(this::throwEx)
-            //        .onErrorResumeNext(Observable.just("Buster")))
+            .flatMap(s ->
+                Observable.just(s)
+                    .map(this::checkDogName)
+                    .onErrorResumeNext(Observable.just("Buster")))
             .doOnNext(System.out::println)
             .subscribe();
     }
 
 
-    public String throwEx(String s) {
+    public String checkDogName(String s) {
         throw new RuntimeException();
-    }
-
-
-    public static Function<Observable<Throwable>, ObservableSource<?>> retryHandler(int retries) {
-
-        return errors -> errors.map(error -> 1)
-
-            // Count the number of errors.
-            .scan((integer, integer2) -> integer + integer2)
-
-            .doOnNext(errorCount -> System.out.println("No. of errors: " + errorCount))
-
-            // Limit the maximum number of retries.
-            .takeWhile(errorCount -> errorCount < retries)
-
-            // Signal resubscribe event after some delay.
-            .flatMapSingle(errorCount -> Single.timer(errorCount, TimeUnit.SECONDS));
     }
 }

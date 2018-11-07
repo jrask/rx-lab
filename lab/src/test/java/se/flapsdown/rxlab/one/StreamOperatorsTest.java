@@ -41,7 +41,7 @@ public class StreamOperatorsTest {
     public void test_take_first_2() {
 
         dogs()
-            //.take(2)
+            .take(2)
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Bella", "Buster");
     }
@@ -51,7 +51,7 @@ public class StreamOperatorsTest {
     public void test_take_last() {
 
         dogs()
-            //.lastElement()
+            .lastElement()
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Rocky");
     }
@@ -70,7 +70,7 @@ public class StreamOperatorsTest {
     public void test_take_last_with_skip() {
 
         dogs()
-            //.skip(4)
+            .skip(4)
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Rocky");
     }
@@ -81,7 +81,7 @@ public class StreamOperatorsTest {
 
         dogs()
             .filter(s -> s.equals("santa"))
-            //.defaultIfEmpty("Rocky")
+            .defaultIfEmpty("Rocky")
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Rocky");
     }
@@ -94,7 +94,7 @@ public class StreamOperatorsTest {
         // the test works
         dogs()
             .map(String::length)
-            //.reduce((s, s2) -> s + s2)
+            .reduce((s, s2) -> s + s2)
             .subscribe(intSubscriber);
         intSubscriber.assertResult(26);
         intSubscriber.assertValueCount(1);
@@ -116,7 +116,7 @@ public class StreamOperatorsTest {
     public void test_merge_streams() {
         // Merging two dog streams into one stream to see what happens
         dogs()
-            //.mergeWith(dogs())
+            .mergeWith(dogs())
             .doOnNext(System.out::println)
             .subscribe(stringSubscriber);
 
