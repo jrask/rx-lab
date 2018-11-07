@@ -1,5 +1,6 @@
 package se.flapsdown.rxlab.four.rx;
 
+import io.reactivex.schedulers.Schedulers;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServerResponse;
@@ -20,6 +21,7 @@ public class NioRxRestService extends AbstractVerticle {
                 .putHeader("content-type", "text/plain");
 
             application.rxAsyncGet()
+                .subscribeOn(Schedulers.io())
                 .map(httpResult -> httpResult.toString() + "\n")
 
                 .subscribe(
