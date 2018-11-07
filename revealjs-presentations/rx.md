@@ -1,14 +1,15 @@
-## RxJava
+## Reactive Extensions for java (RxJava)
 
-Reactive Extensions for java
+* 36k+ stars on github
+* Based on reactive-streams spec
+* Names differ but concepts are the same
 
+Note: More than spring projects...
 ---
 
-## What is it
+## Reactive Programming Definition
 
-* Declarative - Functional 
-* Observer Pattern - On Steroids
-* Streams - On Sterioids
+* the availability of new information drives the logic forward rather than having control flow driven by a thread-of-execution. (lightbend.com)
 
 ---
 
@@ -22,11 +23,11 @@ Reactive Extensions for java
 
 * Not covered
     * Backpressure
-    * Hot/Cold observables
+    * Hot observables
 
 ---
 
-## Components  
+## Components aka Streams 
 
 * Observable  (0 .. n) (Focus of today)
 * Flowable    (0 .. n + backpressure)
@@ -35,11 +36,14 @@ Reactive Extensions for java
 * Completable 
 
 
-Note: Samples like getCustomers=Observable/Flowable, getCustomer=Maybe/Single
+Note: Samples like 
+
+getCustomers=Observable/Flowable
+getCustomer=Maybe/Single
 
 ---
 
-## Stream vs Observable
+## java.util.Stream vs Observable
 ```java
     Optional<Integer> bytes = asList("Hello","World")
             .stream()
@@ -163,8 +167,9 @@ Note: Nothing is done until subscribe() is invoked, thats when items will begin 
 **Rx Operators**
 
 Open rx-lab/lab/src/test/java/se/flapsdown/rxlab/one/.
-Some tests should simply print values, others should be fixed so that
-the test passes
+Some tests should simply print values, others should be fixed so that the test passes
+
+Look at the rxjava wiki at the operators page
 
 ---
 
@@ -378,5 +383,6 @@ Re-write existing blocking imperative program into a
 
 
 BUT first, lets discuss how this could be done without Rx first
+
 
 ---

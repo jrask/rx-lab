@@ -1,6 +1,12 @@
-## Background to Reactive Programming
+## Reactive Programming
 
-#### [ Async Programming Done Right ]
+### [Async Programming Done Right ]
+
+Note: 
+
+* At least at good as we can in java
+* How many have used rx?
+* How many has experience from other languages?
 
 ---
 
@@ -9,6 +15,10 @@
 * Background (Why are we here)
 * Reactive introduction
 * Labs
+    * Operators
+    * Handling Errors
+    * Concurrency
+    * Convert app, Blocking -> Reactive
 
 Note: Discussions, whiteboard, everyone must understand
 
@@ -16,6 +26,7 @@ Note: Discussions, whiteboard, everyone must understand
 
 ## Goals
 
+* **Sharing knowledge!**
 * Understand Javas default imperative programming model, its advantages and its implications
 * Understand what Reactive programming is and when to use it
 * Understand where you are today and where you want to go
@@ -26,11 +37,14 @@ Note: Discussions, whiteboard, everyone must understand
 
 * Performance - Scalability
 * Blocking - Non-Blocking
+* Synchrounous vs Asynchrounous
 * Throughput - Latency
 * Reactive Systems - Reactive Programming
 * Simple - Easy
 
 Note: Latency is the time required to perform some action or to produce some result. Latency is measured in units of time -- hours, minutes, seconds, nanoseconds or clock periods. Throughput is the number of such actions executed or results produced per unit of time.
+
+Asynchronous is defined by the Oxford Dictionary as “not existing or occurring at the same time”, which in this context means that the processing of a message or event is happening at some arbitrary time, possibly in the future.
 
 ---
 
@@ -58,31 +72,41 @@ Note: Difference between Bio and Nio? Performance. Whiteboard!
 * ….
 * Servlet 3.0 - 2009 - Async Servlet
 * Servlet 3.1 - 2013 - Nio
-    * Most framworks has some support for this
+    * Most framweorks has some support for this
 
 Note: Discuss, where are you today and why?
-DeferredResult, AsyncContext
+Spring, Jersey, DeferredResult, AsyncContext
 ---
 
-### Current "web" Programming Model
+### Current "http" Programming Model
 
 * Request-per-thread
     * Since < 1997
     * Good - Bad ?
 
-Note: Simple since it is easy to reason about. Good for cpu intensive. Bad since it is very hard to make it efficient. Hard to parallelize. Blocking!
+Note: 
+* What does the request thread do most of the time?
+* Simple since it is easy to reason about and debug
+* Good for cpu intensive. 
+* Bad since it is very hard to make it efficient. 
+* Hard and complex to parallelize. 
+* Blocking!
+* What can we gain from a non-blocking model?
 
-### Non-blocking IO
+---
+
+### Hmmm... lets discuss..
+
+***Non-blocking IO***
 
 * What does this mean?
 * Is it better and faster than blocking IO?
 
-Note: IO operations does not block calling thread. It scales better with many
-connections since it consumers fewer threads.
+Note: IO operations does not block calling thread. It scales better with many connections since it consumers fewer threads.
 
 ---
 
-### "Default" Java vs NodeJS
+### "Default" Java (backend?) vs NodeJS
 
 Java = Imperative & blocking
 ```java
@@ -102,8 +126,11 @@ httpClient.get("http://google.com", func(err, res) {
 ```
 
 Note: Java ALWAYS block, NodeJS NEVER Block. Android and Java Swing is not allowed to block the event-thread.
+NodeJS has threadpools for cpu intensive work like crypto.
 
 ---
+
+
 
 ## Blocking & non-blocking operations
 
@@ -122,6 +149,8 @@ Note: Which of these provide non-blocking API:s? How can we make blocking operat
 ## Available tools for non-blocking
 
 * What tools do we have to prevent calling thread to block
+
+
 
 Note: Futures always block. CompletableFuture. Callbacks. ThreadPools
 
