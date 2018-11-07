@@ -34,9 +34,9 @@ public class ConcurrencyTest {
                 observableEmitter.onNext("Rask");
                 observableEmitter.onComplete();
             })
-            //.observeOn(Schedulers.computation())
+            .observeOn(Schedulers.computation())
             .doOnNext(Streams::print)  // computation
-            //.subscribeOn(Schedulers.io())
+            .subscribeOn(Schedulers.io())
             .subscribe(observer);      // computation
 
         observer.awaitCompletion();
