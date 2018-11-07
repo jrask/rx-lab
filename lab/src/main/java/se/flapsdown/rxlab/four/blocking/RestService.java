@@ -9,10 +9,21 @@ public class RestService {
     Application application = new Application();
 
     {
-        get("/imperative", (req, res) -> "Total bytes " + application.imperativeGet());
+        get("/imperative", (req, res) -> {
+                long start = System.currentTimeMillis();
 
+                return "Total bytes " + application.imperativeGet() + "\n" +
+                    "Total time " + (System.currentTimeMillis() - start) + "ms\n";
+        }
+        );
 
-        get("/stream", (req, res) ->  "Total bytes " + application.functionalGet());
+        get("/stream", (req, res) ->
+        {
+            long start = System.currentTimeMillis();
+
+            return "Total bytes " + application.functionalGet() + "\n" +
+                "Total time " + (System.currentTimeMillis() - start) + "ms\n";
+        });
     }
 
 

@@ -41,7 +41,7 @@ public class WithRxTest extends AbstractTest {
     
     Observable<String> longRunningTask() {
         return Observable
-                .fromCallable(() -> new LongRunningTask().runFor(1_000));
+                .fromCallable(() -> new LongRunningTask(1_000).toUpperCase("test"));
     }
 
     private void done(String s) {

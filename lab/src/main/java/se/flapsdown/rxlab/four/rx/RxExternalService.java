@@ -5,6 +5,7 @@ import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.flapsdown.rxlab.four.Config;
+import se.flapsdown.rxlab.four.HttpResult;
 import se.flapsdown.rxlab.four.blocking.ExternalService;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class RxExternalService {
 
     private static final OkHttpClient client = new OkHttpClient();
 
-    private final Config.Service endpoint;
+    public final Config.Service endpoint;
 
 
     public RxExternalService(Config.Service endpoint) {
@@ -26,7 +27,7 @@ public class RxExternalService {
     }
 
 
-    public Observable<String> rxGet() {
+    public Observable<HttpResult> rxGet() {
 
         LOG.info("get() {}", endpoint.url);
 
@@ -37,6 +38,7 @@ public class RxExternalService {
 
         return Observable.create(emitter -> {
 
+            long start = System.currentTimeMillis();
             delay(endpoint.delay, TimeUnit.MILLISECONDS);
 
             client.newCall(request).enqueue(new Callback() {
@@ -47,14 +49,14 @@ public class RxExternalService {
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    emitter.onNext(response.body().string());
+                    emitter.onNext(new HttpResult(endpoint, response.body().string(), (System.currentTimeMillis() - start)));
                     emitter.onComplete();
                 }
             });
         });
     }
 
-    public Observable<String> rxGetWrap() {
+    public Observable<HttpResult> rxGetWrap() {
         return Observable.fromCallable(() -> new ExternalService(endpoint).get());
     }
 }

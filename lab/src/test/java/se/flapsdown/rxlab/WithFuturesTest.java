@@ -26,14 +26,15 @@ public class WithFuturesTest extends AbstractTest {
 
     @Test
     public void test_with_1future() throws ExecutionException, InterruptedException {
-        Future<String> res = executorService.submit(() -> new LongRunningTask().runFor(1_000));
+        Future<String> res = executorService.submit(() -> new LongRunningTask(1_000).toUpperCase("test"));
         print(res.get()); // blocks
     }
 
     @Test
     public void test_with_2completable_future() throws ExecutionException, InterruptedException {
 
-        CompletableFuture<Void> voidCompletableFuture = CompletableFuture.supplyAsync(() -> new LongRunningTask().runFor(1_000))
+        CompletableFuture<Void> voidCompletableFuture =
+            CompletableFuture.supplyAsync(() -> new LongRunningTask(1_000).toUpperCase("test"))
                 .thenApply(s -> "Completed Future Sleep was " + s)
                 .thenCompose(s -> CompletableFuture.completedFuture(""))
                 .thenAccept(this::print);

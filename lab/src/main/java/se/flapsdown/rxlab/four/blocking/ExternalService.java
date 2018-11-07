@@ -5,6 +5,7 @@ import okhttp3.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.flapsdown.rxlab.four.Config;
+import se.flapsdown.rxlab.four.HttpResult;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +30,9 @@ public class ExternalService {
     //     - One simple that wraps the sync flow
     //     - One more advanced that uses the async nature of okhttp
     //
-    public String get() {
+    public HttpResult get() {
+
+        long start = System.currentTimeMillis();
         LOG.info("get() {}", endpoint.url);
 
         Request request = new Request.Builder()
@@ -38,7 +41,9 @@ public class ExternalService {
                 .build();
         try {
             delay(endpoint.delay, TimeUnit.MILLISECONDS);
-            return client.newCall(request).execute().body().string();
+            return new HttpResult(endpoint,
+                client.newCall(request).execute().body().string(),
+                (System.currentTimeMillis() - start) );
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

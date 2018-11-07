@@ -4,34 +4,19 @@
 
 ---
 
-## About me
-
-* Java programmer since ...
-* Enjoy other langs (as well)
-* Devops:ish + Cloud + Infra + Observability
-* Highly Opinionated - but try to be open and "discussable"
-
----
-
-## Interactive Presentation
-
-* Discussions
-* "Whiteboarding"
-* Everyone must understand
-
----
-
 ## Agenda
 
 * Background (Why are we here)
 * Reactive introduction
-* Code
+* Labs
+
+Note: Discussions, whiteboard, everyone must understand
 
 ---
 
 ## Goals
 
-* Understand Javas default imperative programming model and its implications
+* Understand Javas default imperative programming model, its advantages and its implications
 * Understand what Reactive programming is and when to use it
 * Understand where you are today and where you want to go
 
@@ -40,7 +25,7 @@
 ## Concepts
 
 * Performance - Scalability
-* Blocking - Non-Blocking (later)
+* Blocking - Non-Blocking
 * Throughput - Latency
 * Reactive Systems - Reactive Programming
 * Simple - Easy
@@ -67,16 +52,19 @@ Note: Difference between Bio and Nio? Performance. Whiteboard!
 
 ---
 
-## Servlets
+### Servlets
 
 * Servlet 2.0 - 1997 (JDK 1.1) 
 * ….
 * Servlet 3.0 - 2009 - Async Servlet
 * Servlet 3.1 - 2013 - Nio
+    * Most framworks has some support for this
 
+Note: Discuss, where are you today and why?
+DeferredResult, AsyncContext
 ---
 
-## Current Programming Model
+### Current "web" Programming Model
 
 * Request-per-thread
     * Since < 1997
@@ -84,14 +72,14 @@ Note: Difference between Bio and Nio? Performance. Whiteboard!
 
 Note: Simple since it is easy to reason about. Good for cpu intensive. Bad since it is very hard to make it efficient. Hard to parallelize. Blocking!
 
----
+### Non-blocking IO
 
-## Threads and concurrency
+* What does this mean?
+* Is it better and faster than blocking IO?
 
-* Blocking
-* Non-blocking
+Note: IO operations does not block calling thread. It scales better with many
+connections since it consumers fewer threads.
 
-Note: Explain and discuss what this means so we we are on the same level
 ---
 
 ### "Default" Java vs NodeJS
@@ -100,7 +88,6 @@ Java = Imperative & blocking
 ```java
 String response = httpClient
         .get("http://google.com").asString();        
-System.out.println(res)
 
 String contents = FileUtils.read("/tmp/file.txt")
 ```
@@ -120,13 +107,15 @@ Note: Java ALWAYS block, NodeJS NEVER Block. Android and Java Swing is not allow
 
 ## Blocking & non-blocking operations
 
-* REST ?
+To make full advantage of rx we need API:s that are non-blocking.
+
+* HTTP/REST clients ?
 * SOAP ?
 * JDBC ?
 * Files ?
 * More ? 
 
-Note: How can we make blocking operations non-blocking:ish? JDBC and transactions? JDBC and transactions over multiple methods?
+Note: Which of these provide non-blocking API:s? How can we make blocking operations non-blocking:ish? JDBC and transactions? JDBC and transactions over multiple methods?
 
 ---
 
@@ -134,11 +123,14 @@ Note: How can we make blocking operations non-blocking:ish? JDBC and transaction
 
 * What tools do we have to prevent calling thread to block
 
-Note: Futures always block. Completable Future
+Note: Futures always block. CompletableFuture. Callbacks. ThreadPools
 
 ---
 
 #### Wrap a blocking call
+
+If a missing non-blocking API exists, we can wrap a blocking call to at least prevent the
+calling thread to block.
 
 Consider this code, how can we wrap this in an async flow to prevent from blocking a calling thread?
 
@@ -182,20 +174,6 @@ CompletableFuture.supplyAsync(() ->
 Note: Single value only
 Cannot declaratively define schedulers
 
----
+### Discussions?
 
-### Rx - (finally....)
-
-```java
-Observable.fromCallable(() 
-    -> new LongRunningTask().runFor(1_000));
-        .map( s -> "Sleep was " + s)
-        .subscribe(this::print)
-```
-
-What about threads?
-
-Note: Goto intellij and run samples.
-Add subscribeOn and observeOn and check which thread it runs on
-
----
+* Missing anything?

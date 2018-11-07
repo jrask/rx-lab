@@ -5,6 +5,7 @@ import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class Streams {
@@ -43,11 +44,32 @@ public class Streams {
         }
     }
 
-    public static class PrintErrorObserver extends QuietObserver {
+    public static class PrintObserver extends QuietObserver {
+
+        CountDownLatch latch = new CountDownLatch(1);
+
+        public void awaitCompletion() {
+            try {
+                latch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         @Override
         public void onError(Throwable throwable) {
             throwable.printStackTrace();
+        }
+
+        @Override
+        public void onNext(Object o) {
+            LOG.info("Subscriber.onNext() {}", o.toString());
+        }
+
+        @Override
+        public void onComplete() {
+            LOG.info("Subscriber.onComplete()");
+            latch.countDown();
         }
     }
 

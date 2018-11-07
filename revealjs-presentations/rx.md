@@ -68,6 +68,22 @@ Note: When using fromCallable allows us to configure on which thread it runs lat
 
 ---
 
+### More Creating observables
+
+```java
+// Single item stream
+Observable<Long> stream = 
+    Observable.timer(errorCount, TimeUnit.SECONDS)
+    // Same as 
+    Single.timer(errorCount, TimeUnit.SECONDS)
+
+// One item every second
+Observable<Long> stream = 
+    Observable.interval(1, TimeUnit.SECONDS)
+    .map(someSource::getStatus)
+
+```
+
 ### Custom creation
 
 ```java    
@@ -216,6 +232,8 @@ Observable.just("Hello", "World")
 ```
 Note: Will retry 5 times regardless of error
 
+---
+
 ### Retry with condition
 
 ```java
@@ -236,12 +254,129 @@ Errors
 
 ## Concurrency
 
-Add slides
+* flatMap() is **The** operator
+* Schedulers
 
+---
+
+### flatMap 
+
+flatMap()
+
+* Flattens (flat) and transforms (map)
+* Returns another Observable/Flowable/Single/etc..
+    * and that is how it supports concurrency
+
+---
+
+### Basic flatMap() example
+
+List -> Observable
+
+```java
+Observable.just(asList("Johan", "Rask"))
+    .flatMap( list -> Observable.fromIterable(list))
+    .subscribe(System.out::println)
+
+> Johan
+> Rask    
+```
+
+---
+### 1. flatMap() and concurrency
+
+Consider the following
+
+```java
+getUUIDs()
+    .map( uuid -> getByUuid(uuid))
+    .subscribe(System.out::println)
+```
+vs
+
+```java
+getUUIDs()
+    .flatMap( uuid -> 
+        Observable.fromCallable(() -> getByUUid(uuid)))
+    .subscribe(System.out::println)
+```
+
+Note: These two will currently result in the exact same way but by using
+flatMap we are prepared to declare concurrency.
+
+---
+
+### Schedulers
+
+
+
+* Think threadpool
+* Define **which** threadpool to use
+* Define **where** to use this threadpool
+
+---
+
+### Scheduling
+
+* observeOn(Scheduler)
+* subscribeOn(Scheduler)
+* Schedulers.computation()
+* Schedulers.io()
+* Custom schedulers
+
+Note: Explain, but show in next and next:next slide how it works
+
+---
+
+### SubscribeOn
+
+```java
+Observable.create(emitter -> {
+        String data = slowNetworkCall();
+        emitter.onNext(data);
+        emitter.onComplete();
+})
+.subscribeOn(Schedulers.io()) // Can be anywhere
+.observeOn(Schedulers.computation()) // Effect downstream
+.map(data -> Json.parse(data))
+.subscribe(System.out::println)
+```
+
+Note: Important to understand how subscribeOn() and observeOn() works
+
+---
+
+### Scheduling example
+
+A more advanced example
+
+```java
+fetchFromNetwork()                // returns Observable
+    .subscribeOn(Schedulers.io())
+    .observeOn(Schedulers.computation())
+    .map (value -> somecomputation()) 
+    .flatMap (value -> 
+        networkCall()  // returns Observable
+            .subscribeOn(Schedulers.io))
+    .subscribe()
+```
 ---
 
 ## Lab 3
 
-From blocking two reactive
+Concurrency
+
+#### Lab 4 
+
+**From blocking two reactive**
+
+Re-write existing blocking imperative program into a
+* Reactive and non-blocking
+* Handle errors (= not crash, use default)
+* Handle retries (=retry, use default if fails)
+* Use timeout to prevent long running
+
+
+BUT first, lets discuss how this could be done without Rx first
 
 ---

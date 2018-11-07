@@ -56,22 +56,21 @@ public class HandleExceptions_Test {
             error -> System.err.println("onError: " + error.getMessage()));
     }
 
+
     @Test
     public void test_retry_when() {
 
-        Observable<Long> source = Observable.interval(0, 1, TimeUnit.SECONDS)
-            .flatMap(x -> {
-                if (x >= 2) return Observable.error(new IOException("Something went wrong!"));
-                else return Observable.just(x);
-            });
 
-        source.retryWhen(retryHandler(3))
+        source.retryWhen(errors ->
 
-        /*source.retryWhen(errors ->
+            // Return this observable until you do not want to have more retries
+            // Perform any operations as you might required
+            errors
 
-            errors.map(error -> 1)
+                // Use a count
+                .map(error -> 1)
 
-                // Count the number of errors.
+                // "Sum" the number of retries
                 .scan((integer, integer2) -> integer + integer2)
 
                 .doOnNext(errorCount -> System.out.println("No. of errors: " + errorCount))
@@ -80,8 +79,8 @@ public class HandleExceptions_Test {
                 .takeWhile(errorCount -> errorCount < 3)
 
                 // Signal resubscribe event after some delay.
-                .flatMapSingle(errorCount -> Single.timer(errorCount, TimeUnit.SECONDS))
-        )*/
+                .flatMap(errorCount -> Observable.timer(errorCount, TimeUnit.SECONDS))
+        )
         .blockingSubscribe(
             x -> System.out.println("onNext: " + x),
             Throwable::printStackTrace,

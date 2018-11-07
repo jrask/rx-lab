@@ -10,7 +10,7 @@ import static se.flapsdown.rxlab.util.DogStream.dogs;
 public class StreamOperatorsTest {
 
 
-    TestObserver<String> stringSubscriber = new TestObserver<>();
+    TestObserver<String>  stringSubscriber = new TestObserver<>();
     TestObserver<Integer> intSubscriber = new TestObserver<>();
 
 
@@ -58,6 +58,15 @@ public class StreamOperatorsTest {
 
 
     @Test
+    public void test_take_while() {
+
+        dogs()
+            .takeWhile( s -> !s.startsWith("P"))
+            .subscribe(stringSubscriber);
+        stringSubscriber.assertResult("Bella","Buster");
+    }
+
+    @Test
     public void test_take_last_with_skip() {
 
         dogs()
@@ -91,6 +100,17 @@ public class StreamOperatorsTest {
         intSubscriber.assertValueCount(1);
     }
 
+
+    @Test
+    public void test_flatmap_streams() {
+
+
+        dogs()
+            .flatMap(s -> dogs())
+            .subscribe(stringSubscriber);
+
+        stringSubscriber.assertValueCount(5 * 5);
+    }
 
     @Test
     public void test_merge_streams() {

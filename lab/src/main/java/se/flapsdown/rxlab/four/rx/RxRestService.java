@@ -10,12 +10,21 @@ public class RxRestService {
 
         RxApplication application = new RxApplication();
 
-        get("/rxasync", (req, res) -> "Total bytes " +
-            application.rxAsyncGet().reduce((integer, integer2) -> integer + integer2));
 
-        get("/rxsync", (req, res) ->  "Total bytes " +
-            application.rxSyncGet().reduce((integer, integer2) -> integer + integer2));
+        get("/rxasync", (req, res) ->  {
+            long start = System.currentTimeMillis();
 
+            return "Total bytes " + application.rxAsyncGet().map(httpRes -> httpRes.data.length())
+                .reduce(Math::addExact).blockingGet() + "\n" +
+                    "Total time " + (System.currentTimeMillis() - start) + "ms\n";
+        });
+
+        get("/rxsync", (req, res) -> {
+            long start = System.currentTimeMillis();
+
+            return "Total bytes " + application.rxSyncGet().map(httpRes -> httpRes.data.length()).reduce(Math::addExact).blockingGet() + "\n" +
+                    "Total time " + (System.currentTimeMillis() - start) + "ms\n";
+        });
     }
 
 
