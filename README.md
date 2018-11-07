@@ -1,6 +1,12 @@
 ## Rx Presentation and Lab
 
-WIP
+### Lab
+
+Tests will not pass until they are fixed.
+Run this to verify that dependencies are downloaded properly and code can be compiled.
+
+    mvn clean install -DskipTests
+
 
 ### Run presentation
 
