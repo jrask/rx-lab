@@ -20,7 +20,7 @@ public class NioRxRestService extends AbstractVerticle {
                 .putHeader("content-type", "text/plain");
 
             application.rxAsyncGet()
-                .map(number -> number.toString() + "\n")
+                .map(httpResult -> httpResult.toString() + "\n")
 
                 .subscribe(
                     httpServerResponse::write,
