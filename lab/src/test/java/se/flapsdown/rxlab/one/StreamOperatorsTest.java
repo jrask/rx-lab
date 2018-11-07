@@ -41,7 +41,7 @@ public class StreamOperatorsTest {
     public void test_take_first_2() {
 
         dogs()
-            .take(2)
+            // here...
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Bella", "Buster");
     }
@@ -51,7 +51,7 @@ public class StreamOperatorsTest {
     public void test_take_last() {
 
         dogs()
-            .lastElement()
+            // here...
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Rocky");
     }
@@ -61,7 +61,7 @@ public class StreamOperatorsTest {
     public void test_take_while() {
 
         dogs()
-            .takeWhile( s -> !s.startsWith("P"))
+            // here...
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Bella","Buster");
     }
@@ -70,7 +70,7 @@ public class StreamOperatorsTest {
     public void test_take_last_with_skip() {
 
         dogs()
-            .skip(4)
+            // here...
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Rocky");
     }
@@ -79,9 +79,12 @@ public class StreamOperatorsTest {
     @Test
     public void test_return_default_dogname() {
 
+        // filter will return an empty stream but we want
+        // Rocky
+
         dogs()
             .filter(s -> s.equals("santa"))
-            .defaultIfEmpty("Rocky")
+            // here...
             .subscribe(stringSubscriber);
         stringSubscriber.assertResult("Rocky");
     }
@@ -94,7 +97,7 @@ public class StreamOperatorsTest {
         // the test works
         dogs()
             .map(String::length)
-            .reduce((s, s2) -> s + s2)
+            // here...
             .subscribe(intSubscriber);
         intSubscriber.assertResult(26);
         intSubscriber.assertValueCount(1);
@@ -105,8 +108,10 @@ public class StreamOperatorsTest {
     public void test_flatmap_streams() {
 
 
+        // Use flatmap to return a stream of dogs for each dog
+
         dogs()
-            .flatMap(s -> dogs())
+            // here...
             .subscribe(stringSubscriber);
 
         stringSubscriber.assertValueCount(5 * 5);
@@ -116,7 +121,7 @@ public class StreamOperatorsTest {
     public void test_merge_streams() {
         // Merging two dog streams into one stream to see what happens
         dogs()
-            .mergeWith(dogs())
+            // here...
             .doOnNext(System.out::println)
             .subscribe(stringSubscriber);
 
@@ -130,8 +135,8 @@ public class StreamOperatorsTest {
         // Zip two dog streams into a stream of Streams.Pair
         dogs()
 
-            .zipWith(dogs(), (dog1, dog2) -> Streams.Pair.of(dog1, dog2))
-            .map(Streams.Pair::toString)
+            // zip (checkout Streams.Pair in util package)
+            // toString()
             .doOnNext(System.out::println)
             .take(1)
             .subscribe(stringSubscriber);

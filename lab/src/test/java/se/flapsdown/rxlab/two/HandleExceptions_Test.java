@@ -41,7 +41,7 @@ public class HandleExceptions_Test {
 
         source
             .doOnNext(s -> cnt.incrementAndGet())
-            .retry(3)
+            // .here
             .blockingSubscribe(
                 x -> print("onNext: " + x),
                 error -> print("onError: " + error.getMessage()));
@@ -57,10 +57,10 @@ public class HandleExceptions_Test {
 
         source
             .doOnNext(s -> cnt.incrementAndGet())
-            .retry((retryCount, error) -> retryCount <= 3)
-        .blockingSubscribe(
-            x -> System.out.println("onNext: " + x),
-            error -> System.err.println("onError: " + error.getMessage()));
+            // .here
+            .blockingSubscribe(
+                x -> System.out.println("onNext: " + x),
+                error -> System.err.println("onError: " + error.getMessage()));
 
         assertThat(cnt.get()).isEqualTo(8);
     }
@@ -69,7 +69,7 @@ public class HandleExceptions_Test {
     @Test
     public void test_retry_when() {
 
-        // This is finished, try to understand what it does
+        // This is complete, try to understand what it does
 
         source.retryWhen(errors ->
 
@@ -105,7 +105,7 @@ public class HandleExceptions_Test {
         // It is good enough if the default dogname is printed once
         dogs()
             .map(this::checkDogName)
-            .onErrorReturnItem("Buster")
+            // .here
             .doOnNext(System.out::println)
             .subscribe(subscribeQuiet());
     }
@@ -121,10 +121,11 @@ public class HandleExceptions_Test {
 
 
         dogs()
-            .flatMap(s ->
-                Observable.just(s)
-                    .map(this::checkDogName)
-                    .onErrorResumeNext(Observable.just("Buster")))
+
+            // new Stream from dog
+            // checkDogName
+            // if error, return a default name
+
             .doOnNext(System.out::println)
             .subscribe();
     }

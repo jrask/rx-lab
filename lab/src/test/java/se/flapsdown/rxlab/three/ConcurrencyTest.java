@@ -24,7 +24,7 @@ public class ConcurrencyTest {
     @Test
     public void test_subscribeon_and_observeon() {
         // Fix so that, When this runs,
-        // 1. messages generate in the create() method, should be performed
+        // 1. messages generate in the create() (this is the subscribe phase), should be performed
         //    on the io thread
         // 2. other messages should be executed on the computation thread
 
@@ -34,9 +34,7 @@ public class ConcurrencyTest {
                 observableEmitter.onNext("Rask");
                 observableEmitter.onComplete();
             })
-            //.observeOn(Schedulers.computation())
             .doOnNext(Streams::print)  // computation
-            //.subscribeOn(Schedulers.io())
             .subscribe(observer);      // computation
 
         observer.awaitCompletion();
@@ -68,8 +66,7 @@ public class ConcurrencyTest {
         dogs()
             //.map(longRunningTask::toUpperCase)
             .flatMap(name ->
-                Observable.fromCallable(() -> longRunningTask.toUpperCase(name))
-                    .subscribeOn(Schedulers.io()))
+                Observable.fromCallable(() -> longRunningTask.toUpperCase(name)))
             .subscribe(observer);
 
         observer.awaitCompletion();
