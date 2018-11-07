@@ -13,6 +13,7 @@ public class Config {
         LOCALHOST   ("http://localhost",          3_000),
         SHB         ("http://handelsbanken.se",   2_000),
         GOOGLE      ("http://google.com",         1_000),
+        AFTONBLADET ("http://www.aftonbladet.se", 2_000),
         SYDSVENSKAN ("http://www.sydsvenskan.se", 5_000);
 
         public String url;

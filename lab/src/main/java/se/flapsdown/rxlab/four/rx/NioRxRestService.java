@@ -13,7 +13,7 @@ public class NioRxRestService extends AbstractVerticle {
     public void start() {
         Router router = Router.router(vertx);
 
-        router.get("/hello").handler(rc -> {
+        router.get("/niorx").handler(rc -> {
 
             HttpServerResponse httpServerResponse = rc.response()
                 .setChunked(true)
